@@ -59,11 +59,11 @@ file that was distributed with this source code.
             {% else %}
                 {% if action is defined %}
                     -
-                    {% for label, uri in admin.breadcrumbs(action) %}
+                    {% for entry in admin.breadcrumbs(action) %}
                         {% if not loop.first  %}
                             &gt;
                         {% endif %}
-                        {{ label }}
+                        {{ entry.label }}
                     {% endfor %}
                 {% endif %}
             {% endif%}
