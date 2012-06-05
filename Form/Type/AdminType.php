@@ -29,8 +29,16 @@ class AdminType extends AbstractType
             $builder->add('_delete', 'checkbox', array('required' => false, 'property_path' => false));
         }
 
-        if (!$admin->hasSubject()) {
-            $admin->setSubject($builder->getData());
+        // dru1:
+        // we need to have a specific field description based on every subject in a one-to-many collection.
+        // this will allow dynamic form types in the Admin class
+        //
+        $admin->setSubject($builder->getData());
+        
+        // dru1: (maybe redundant functionality)
+        // we also want to know which admin is on the "owning side".
+        if (method_exists($admin, "setAssociatedAdmin")) {
+            $admin->setAssociatedAdmin($this->getFieldDescription($options)->getAdmin());
         }
 
         $admin->defineFormBuilder($builder);

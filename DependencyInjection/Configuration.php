@@ -114,7 +114,8 @@ class Configuration implements ConfigurationInterface
                             ->scalarNode('datagrid_builder')->end()
                             ->scalarNode('translator')->end()
                             ->scalarNode('configuration_pool')->end()
-                            ->scalarNode('router')->end()
+                            // dru1: fix name
+                            ->scalarNode('route_generator')->end()
                             ->scalarNode('validator')->end()
                             ->scalarNode('security_handler')->end()
                             ->scalarNode('label')->end()

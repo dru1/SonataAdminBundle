@@ -150,9 +150,10 @@ class HelperController
      */
     public function getShortObjectDescriptionAction(Request $request)
     {
-        $code     = $request->get('code');
-        $objectId = $request->get('objectId');
-        $uniqid   = $request->get('uniqid');
+        $code       = $request->get('code');
+        $objectId   = $request->get('objectId');
+        $uniqid     = $request->get('uniqid');
+        $options    = $request->get('options');
 
         $admin = $this->pool->getInstance($code);
 
@@ -169,7 +170,7 @@ class HelperController
         if (!$object) {
             return new Response();
         }
-
+        
         $description = 'no description available';
         foreach (array('getAdminTitle', 'getTitle', 'getName', '__toString') as $method) {
             if (method_exists($object, $method)) {
@@ -177,8 +178,15 @@ class HelperController
                 break;
             }
         }
-
-        $url = $admin->generateUrl('edit', array('id' => $objectId));
+        
+        $params = array('id' => $objectId);
+        if (!empty($options) && isset($options["link_parameters"])) {
+            foreach($options["link_parameters"] as $key => $value) {
+                $params[$key] = $value;
+            }
+        }
+        
+        $url = $admin->generateUrl('edit', $params);
         
         $htmlOutput = $this->twig->render($admin->getTemplate('short_object_description'),
             array(
@@ -187,7 +195,7 @@ class HelperController
                 'url' => $url
             )
         );
-
+        
         return new Response($htmlOutput);
     }
 

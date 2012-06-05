@@ -123,12 +123,6 @@ class AdminHelper
 
         $fields = array_keys($fieldDescription->getAssociationAdmin()->getFormFieldDescriptions());
 
-        // for now, not sure how to do that
-        $value = array();
-        foreach ($fields as $name) {
-            $value[$name] = '';
-        }
-
         // add new elements to the subject
         while ($objectCount < $postCount) {
             // append a new instance into the object
@@ -136,9 +130,31 @@ class AdminHelper
             $objectCount++;
         }
 
-        $this->addNewInstance($form->getData(), $fieldDescription);
-        $data[$childFormBuilder->getName()][] = $value;
+        // dru1:
+        //  
+        // this modification is for a bidirectional assignment (one-to-many and many-to-one)
+        // when we add a new entity to the one-to-many collection, this entity should  
+        // be assigned to the "parent entity", which is the entity holding the persistent collection.
+        //
+        // e.g. Entity "Market" and "Stock". The relationship (1:n) is mapped using the entity methods:
+        // Market::getStocks()                   owning side
+        // Stock::setMarket($market);            inverse side
+        //
+        // Whenever a new Stock is created from the MarketAdmin Class, the method setMarket() should be called. 
+        // This will improve the usability, because the user doesn't have to take care of the owning side,
+        // when he is adding a new Stock to a Market.
+        // 
 
+        // get a new instance
+        $instance = $fieldDescription->getAssociationAdmin()->getNewInstance();
+        // set the reference to the owning side on the inverse side 
+        // this will be done by the admin class itself. (finding the right method to call)
+        $fieldDescription->getAssociationAdmin()->setParentReference($admin, $instance);
+        // add the entity to the collection (one-to-many)
+        $collection = call_user_func(array($form->getData(),'get'.ucfirst($childFormBuilder->getName())));
+        $collection->add($instance);
+        // end of fix
+        
         $finalForm = $admin->getFormBuilder()->getForm();
         $finalForm->setData($subject);
 
