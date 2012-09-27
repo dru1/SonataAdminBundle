@@ -44,4 +44,20 @@ class BooleanType extends FormChoiceType
 
         return $options;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getParent(array $options)
+    {
+        return 'choice';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getName()
+    {
+        return 'sonata_type_boolean';
+    }
 }

@@ -381,6 +381,15 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
     protected $extensions = array();
 
     protected $labelTranslatorStrategy;
+    
+    /**
+     * Setting to true will enable preview mode for
+     * the entity and show a preview button in the
+     * edit/create forms
+     * 
+     * @var boolean	
+     */
+    protected $supportsPreviewMode = false;
 
     /**
      * Roles and permissions per role
@@ -689,8 +698,25 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
             return;
         }
 
+        $filterParameters = $this->getFilterParameters();
+
+        // transform _sort_by from a string to a FieldDescriptionInterface for the datagrid.
+        if (isset($filterParameters['_sort_by']) && is_string($filterParameters['_sort_by'])) {
+            if ($this->hasListFieldDescription($filterParameters['_sort_by'])) {
+                $filterParameters['_sort_by'] = $this->getListFieldDescription($filterParameters['_sort_by']);
+            } else {
+                $filterParameters['_sort_by'] = $this->getModelManager()->getNewFieldDescriptionInstance(
+                    $this->getClass(),
+                    $filterParameters['_sort_by'],
+                    array()
+                );
+
+                $this->getListBuilder()->buildField(null, $filterParameters['_sort_by'], $this);
+            }
+        }
+
         // initialize the datagrid
-        $this->datagrid = $this->getDatagridBuilder()->getBaseDatagrid($this, $this->getFilterParameters());
+        $this->datagrid = $this->getDatagridBuilder()->getBaseDatagrid($this, $filterParameters);
 
         $this->datagrid->getPager()->setMaxPerPage($this->maxPerPage);
         $this->datagrid->getPager()->setMaxPageLinks($this->maxPageLinks);
@@ -1818,10 +1844,12 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
             array('uri' => $this->routeGenerator->generate('sonata_admin_dashboard'))
         );
 
-        $child = $child->addChild(
-            $this->trans($this->getLabelTranslatorStrategy()->getLabel(sprintf('%s_list', $this->getClassnameLabel()), 'breadcrumb', 'link')),
-            array('uri' => $this->generateUrl('list'))
-        );
+        if ($this->hasRoute('list')) {
+            $child = $child->addChild(
+                $this->trans($this->getLabelTranslatorStrategy()->getLabel(sprintf('%s_list', $this->getClassnameLabel()), 'breadcrumb', 'link')),
+                array('uri' => $this->generateUrl('list'))
+            );
+        }
 
         $childAdmin = $this->getCurrentChildAdmin();
 
@@ -1836,7 +1864,7 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
             return $childAdmin->buildBreadcrumbs($action, $child);
 
         } elseif ($this->isChild()) {
-            if ($action != 'list') {
+            if ($action != 'list' && $this->hasRoute('list')) {
                 $menu = $menu->addChild(
                     $this->trans($this->getLabelTranslatorStrategy()->getLabel(sprintf('%s_list', $this->getClassnameLabel()), 'breadcrumb', 'link')),
                     array('uri' => $this->generateUrl('list'))
@@ -2402,4 +2430,17 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
     {
         return $this->labelTranslatorStrategy;
     }
+    
+	/**
+     * Returning true will enable preview mode for
+     * the target entity and show a preview button
+     * when editing/creating an entity
+     * 
+     * @return boolean
+     */
+    public function supportsPreviewMode()
+    {
+        return $this->supportsPreviewMode;
+    }
+    
 }

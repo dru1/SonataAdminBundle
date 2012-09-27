@@ -53,6 +53,9 @@ class TranslatableChoiceType extends ChoiceType
         );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function buildForm(FormBuilder $builder, array $options)
     {
         // translate options before building form
@@ -66,5 +69,21 @@ class TranslatableChoiceType extends ChoiceType
         }
 
         parent::buildForm($builder, $options);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getParent(array $options)
+    {
+        return 'choice';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getName()
+    {
+        return 'sonata_type_translatable_choice';
     }
 }

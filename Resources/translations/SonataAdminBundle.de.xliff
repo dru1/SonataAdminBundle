@@ -92,11 +92,11 @@
             </trans-unit>
             <trans-unit id="link_first_pager">
                 <source>link_first_pager</source>
-                <target>link_first_pager</target>
+                <target>Erste Seite</target>
             </trans-unit>
             <trans-unit id="link_last_pager">
                 <source>link_last_pager</source>
-                <target>link_last_pager</target>
+                <target>Letzte Seite</target>
             </trans-unit>
             <trans-unit id="Admin">
                 <source>Admin</source>
@@ -184,7 +184,7 @@
             </trans-unit>
             <trans-unit id="message_batch_confirmation">
                 <source>message_batch_confirmation</source>
-                <target>Sind Sie sicher dass Sie diese Aktion bestätigen und für alle ausgewählten Elemente ausführen wollen?</target>
+                <target>Sind Sie sicher dass Sie diese Aktion bestätigen und für alle ausgewählten Elemente ausführen wollen?|Sind Sie sicher dass Sie diese Aktion bestätigen und für die %count% ausgewählten Elemente ausführen wollen?</target>
             </trans-unit>
             <trans-unit id="btn_execute_batch_action">
                 <source>btn_execute_batch_action</source>
@@ -237,6 +237,10 @@
             <trans-unit id="label_filters">
                 <source>label_filters</source>
                 <target>Filter</target>
+            </trans-unit>
+            <trans-unit id="label_date_type_equal">
+                <source>label_date_type_equal</source>
+                <target>=</target>
             </trans-unit>
             <trans-unit id="label_date_type_greater_equal">
               <source>label_date_type_greater_equal</source>
@@ -312,6 +316,19 @@
             <trans-unit id="loading_information">
                 <source>loading_information</source>
                 <target>Informationen werden geladen…</target>
+            </trans-unit>
+
+            <trans-unit id="btn_preview">
+                <source>btn_preview</source>
+                <target>Vorschau</target>
+            </trans-unit>
+            <trans-unit id="btn_preview_approve">
+                <source>btn_preview_approve</source>
+                <target>Bestätigen</target>
+            </trans-unit>
+            <trans-unit id="btn_preview_decline">
+                <source>btn_preview_decline</source>
+                <target>Ablehnen</target>
             </trans-unit>
         </body>
     </file>
