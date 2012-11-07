@@ -67,16 +67,16 @@ class TranslatableChoiceType extends ChoiceType
         if (!empty($options['empty_value'])) {
             $options['empty_value'] = $this->translator->trans($options['empty_value'], array(), $options['catalogue']);
         }
-
+        
         parent::buildForm($builder, $options);
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getParent(array $options)
     {
-        return 'choice';
+        return $options['expanded'] ? 'form' : 'field';
     }
 
     /**
